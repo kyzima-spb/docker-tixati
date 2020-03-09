@@ -22,6 +22,11 @@ start_xvfb()
 
     echo -n "Starting virtual X frame buffer: Xvfb "
 
+    if [ -f /tmp/.X99-lock ]
+    then
+        rm /tmp/.X99-lock
+    fi
+
     /usr/bin/Xvfb $DISPLAY -screen $screen $resolution -ac -noreset -nolisten tcp &
     XVFB_PID=$!
 
