@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_menu>
     <menu id="root-menu" label="Openbox">
-        <item label="Tixati">
+        <item label="Tixati" icon="/usr/share/icons/hicolor/48x48/apps/tixati.png">
             <action name="execute"><execute>tixati %U</execute></action>
         </item>
     </menu>
