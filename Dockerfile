@@ -26,7 +26,6 @@ RUN groupadd -g $GID tixati \
     && /bin/bash -c 'mkdir -p /home/tixati/{.tixati,Desktop/{downloads,torrent-files}}'
 
 COPY ./menu.xml /var/lib/openbox/debian-menu.xml
-COPY ./bookmarks /home/tixati/.config/gtk-3.0/bookmarks
 
 RUN chown -R tixati:tixati /home/tixati
 
@@ -35,9 +34,7 @@ RUN chmod +x /entrypoint.sh
 
 USER tixati
 
-VOLUME /home/tixati/.tixati
-VOLUME /home/tixati/Desktop/downloads
-VOLUME /home/tixati/Desktop/torrent-files
+VOLUME /home/tixati/.tixati /home/tixati/Desktop/downloads /home/tixati/Desktop/torrent-files
 
 ENTRYPOINT "/entrypoint.sh"
 
