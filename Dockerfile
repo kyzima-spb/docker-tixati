@@ -23,13 +23,12 @@ RUN mkdir /tmp/.X11-unix \
 
 RUN groupadd -g $GID tixati \
     && useradd -u $UID -g $GID -s /bin/bash -m tixati \
-    && /bin/bash -c 'mkdir -p /home/tixati/{.tixati,Desktop/{downloads,torrent-files}}'
+    && /bin/bash -c 'mkdir -p /home/tixati/{.tixati,Desktop/{downloads,torrent-files}}' \
+    && chown -R tixati:tixati /home/tixati
 
 COPY ./menu.xml /var/lib/openbox/debian-menu.xml
+COPY ./entrypoint.sh /entrypoint.sh
 
-RUN chown -R tixati:tixati /home/tixati
-
-COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 USER tixati
