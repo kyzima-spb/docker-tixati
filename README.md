@@ -5,10 +5,10 @@ This crazy idea to run GUI applications in the Docker container, but unfortunate
 
 ## Volumes
 
-### `/home/tixati/Desktop/downloads`
+#### `/home/tixati/Desktop/downloads`
 Directory with downloaded files.
 
-### `/home/tixati/Desktop/torrent-files`
+#### `/home/tixati/Desktop/torrent-files`
 Directory with torrent files.
 
 
@@ -17,7 +17,11 @@ Directory with torrent files.
 Run the container named tixati_1 in daemon mode and mount the specified volumes to the specified directories of the host machine:
 
 ```bash
-docker run -d --name tixati_1 -p 5900:5900 -p 29939:29939 -v $(pwd)/downloads:/home/tixati/Desktop/downloads -v $(pwd)/torrent-files:/home/tixati/Desktop/torrent-files kyzimaspb/tixati
+docker run -d --name tixati_1 \
+    -p 5900:5900 \
+    -p 29939:29939 \
+    -v $(pwd)/downloads:/home/tixati/Desktop/downloads \
+    -v $(pwd)/torrent-files:/home/tixati/Desktop/torrent-files kyzimaspb/tixati
 ```
 
 Forwarded ports:
@@ -27,14 +31,14 @@ Forwarded ports:
 
 ## Environment Variables
 
-### `ATTEMPTS_COUNT`
+#### `ATTEMPTS_COUNT`
 The number of attempts to start each service.
 
-### `DISPLAY`
-### `XVFB_SCREEN`
+#### `DISPLAY`
+#### `XVFB_SCREEN`
 
-### `XVFB_RESOLUTION`
+#### `XVFB_RESOLUTION`
 Screen resolution of the virtual X server.
 
-### `VNC_SERVER_PASSWORD`
+#### `VNC_SERVER_PASSWORD`
 The password for the VNC server.
