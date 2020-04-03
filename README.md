@@ -32,5 +32,31 @@ Forwarded ports:
 * `XVFB_RESOLUTION` - screen resolution of the virtual X server;
 * `VNC_SERVER_PASSWORD` - the password for the VNC server.
 
-#### `DISPLAY`
-#### `XVFB_SCREEN`
+
+## Autostart with a password
+
+Automatically start the container at system startup with the password `qwe123` to connect to the VNC server:
+
+```bash
+docker run -d --name tixati_1 --restart always \
+    -p 5900:5900 \
+    -p 29939:29939 \
+    -e VNC_SERVER_PASSWORD=qwe123 \
+    -v $(pwd)/downloads:/home/tixati/Desktop/downloads \
+    -v $(pwd)/torrent-files:/home/tixati/Desktop/torrent-files kyzimaspb/tixati
+```
+
+
+## Resource limits
+
+You can use all resource limits available for the `docker run` command. For example, limit the amount of RAM:
+
+```bash
+docker run -d --name tixati_1 --restart always \
+    -m 512M \
+    -p 5900:5900 \
+    -p 29939:29939 \
+    -e VNC_SERVER_PASSWORD=qwe123 \
+    -v $(pwd)/downloads:/home/tixati/Desktop/downloads \
+    -v $(pwd)/torrent-files:/home/tixati/Desktop/torrent-files kyzimaspb/tixati
+```
