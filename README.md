@@ -5,11 +5,12 @@ This crazy idea to run GUI applications in the Docker container, but unfortunate
 
 ## Volumes
 
-#### `/home/tixati/Desktop/downloads`
-Directory with downloaded files.
-
-#### `/home/tixati/Desktop/torrent-files`
-Directory with torrent files.
+<dl>
+    <dt>/home/tixati/Desktop/downloads</dt>
+    <dd>Directory with downloaded files.</dd>
+    <dt>/home/tixati/Desktop/torrent-files</dt>
+    <dd>Directory with torrent files.</dd>
+</dl>
 
 
 ## Run in daemon mode
