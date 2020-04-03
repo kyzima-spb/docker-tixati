@@ -5,12 +5,8 @@ This crazy idea to run GUI applications in the Docker container, but unfortunate
 
 ## Volumes
 
-<dl>
-    <dt>/home/tixati/Desktop/downloads</dt>
-    <dd>Directory with downloaded files.</dd>
-    <dt>/home/tixati/Desktop/torrent-files</dt>
-    <dd>Directory with torrent files.</dd>
-</dl>
+* `/home/tixati/Desktop/downloads` - directory with downloaded files;
+* `/home/tixati/Desktop/torrent-files` - directory with torrent files.
 
 
 ## Run in daemon mode
@@ -32,14 +28,9 @@ Forwarded ports:
 
 ## Environment Variables
 
-#### `ATTEMPTS_COUNT`
-The number of attempts to start each service.
+* `ATTEMPTS_COUNT` - the number of attempts to start each service;
+* `XVFB_RESOLUTION` - screen resolution of the virtual X server;
+* `VNC_SERVER_PASSWORD` - the password for the VNC server.
 
 #### `DISPLAY`
 #### `XVFB_SCREEN`
-
-#### `XVFB_RESOLUTION`
-Screen resolution of the virtual X server.
-
-#### `VNC_SERVER_PASSWORD`
-The password for the VNC server.
