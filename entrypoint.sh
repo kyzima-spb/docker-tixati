@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-export DISPLAY=${XVFB_DISPLAY:-:99}
+export DISPLAY=:99
 
 ATTEMPTS_COUNT=${ATTEMPTS_COUNT:-3}
 
@@ -16,7 +16,6 @@ main()
 
 start_xvfb()
 {
-    local screen=${XVFB_SCREEN:-0}
     local resolution=${XVFB_RESOLUTION:-1280x720x24}
     local attempts=$ATTEMPTS_COUNT
 
@@ -27,7 +26,7 @@ start_xvfb()
         rm /tmp/.X99-lock
     fi
 
-    /usr/bin/Xvfb $DISPLAY -screen $screen $resolution -ac -noreset -nolisten tcp &
+    /usr/bin/Xvfb $DISPLAY -screen 0 $resolution -ac -noreset -nolisten tcp &
     XVFB_PID=$!
 
     while [ ! -e /tmp/.X11-unix/X99 ] # xset q

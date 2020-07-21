@@ -6,11 +6,12 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ARG UID=1000
 ARG GID=1000
+ARG TIXATI_VERSION=2.74
 
 RUN apt update
 
 RUN apt install -yq --no-install-recommends wget \
-    && wget --no-check-certificate -qO /tmp/tixati.deb "https://download2.tixati.com/download/tixati_2.67-1_amd64.deb" \
+    && wget --no-check-certificate -qO /tmp/tixati.deb "https://download2.tixati.com/download/tixati_${TIXATI_VERSION}-1_amd64.deb" \
     && dpkg -i /tmp/tixati.deb || true \
     && apt install -yqf --no-install-recommends \
     && apt install -yq --no-install-recommends wmctrl openbox xvfb x11vnc locales \
@@ -29,11 +30,11 @@ RUN groupadd -g $GID tixati \
 COPY ./menu.xml /var/lib/openbox/debian-menu.xml
 COPY ./entrypoint.sh /entrypoint.sh
 
-RUN chmod +x /entrypoint.sh
-
 USER tixati
 
 VOLUME /home/tixati/.tixati /home/tixati/Desktop/downloads /home/tixati/Desktop/torrent-files
+
+STOPSIGNAL SIGTERM
 
 ENTRYPOINT "/entrypoint.sh"
 
