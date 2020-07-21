@@ -10,8 +10,16 @@ ARG TIXATI_VERSION=2.74
 
 RUN apt update
 
-RUN apt install -yq --no-install-recommends wget \
-    && wget --no-check-certificate -qO /tmp/tixati.deb "https://download2.tixati.com/download/tixati_${TIXATI_VERSION}-1_amd64.deb" \
+RUN set -x \
+    && apt install -yq --no-install-recommends wget \
+    && \
+    download_url="https://download2.tixati.com/download/tixati_${TIXATI_VERSION}-1_amd64.deb"; \
+    echo "Checking for package existence..."; \
+    wget -q --no-check-certificate --method=HEAD $download_url || { \
+        echo "Version ${TIXATI_VERSION} of the package was not found."; \
+        exit 1; \
+    } \
+    && wget --no-check-certificate -qO /tmp/tixati.deb $download_url \
     && dpkg -i /tmp/tixati.deb || true \
     && apt install -yqf --no-install-recommends \
     && apt install -yq --no-install-recommends wmctrl openbox xvfb x11vnc locales \
