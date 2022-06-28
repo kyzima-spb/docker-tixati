@@ -1,0 +1,5 @@
+#!/command/execlineb -P
+
+with-contenv
+
+tixati %U
