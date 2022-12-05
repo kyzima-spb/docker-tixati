@@ -62,6 +62,17 @@ $ docker run -d --name tixati_1 \
 ```
 
 
+## How to change Tixati version?
+
+The `TIXATI_VERSION` build argument allows you to specify the version of Tixati:
+
+```bash
+$ git clone https://github.com/kyzima-spb/docker-tixati.git
+$ cd docker-tixati
+$ docker build -t tixati --build-arg TIXATI_VERSION=3.11 .
+```
+
+
 ## How to change distribution release?
 
 The `RELEASE` build argument allows you to specify the release of the Debian distribution. Available values: `stretch-slim`, `buster-slim`, `bullseye-slim`:
