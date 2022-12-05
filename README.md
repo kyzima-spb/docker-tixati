@@ -33,6 +33,15 @@ Forwarded ports:
 * `XVFB_RESOLUTION` - screen resolution of the virtual X server;
 * `VNC_SERVER_PASSWORD` - the password for the VNC server.
 
+## How to change Tixati version?
+
+The `TIXATI_VERSION` build argument allows you to specify the version of Tixati:
+
+```bash
+$ git clone https://github.com/kyzima-spb/docker-tixati.git
+$ cd docker-tixati
+$ docker build -t tixati --build-arg TIXATI_VERSION=3.11 .
+```
 
 ## Autostart with a password
 
