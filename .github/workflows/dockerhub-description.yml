@@ -1,11 +1,13 @@
 name: Update Docker Hub Description
-true:
+
+on:
   push:
     branches:
     - master
     paths:
     - README.md
     - .github/workflows/dockerhub-description.yml
+
 jobs:
   docker:
     runs-on: ubuntu-latest
