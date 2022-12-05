@@ -54,7 +54,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./
+          context: ./docker
           build-args: |
             TIXATI_VERSION=${{ needs.check.outputs.version }}
           push: true
