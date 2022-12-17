@@ -1,22 +1,20 @@
-ARG RELEASE=bullseye-slim
+ARG RELEASE="bullseye-slim"
 
 FROM kyzimaspb/gui:$RELEASE
 
 LABEL maintainer="Kirill Vercetti <office@kyzima-spb.com>"
 
-ARG TIXATI_DOWNLOAD_URL=https://download2.tixati.com/download
-ARG TIXATI_VERSION=3.12
-
 USER root
 
+ARG TIXATI_DOWNLOAD_URL="https://download2.tixati.com/download"
+ARG TIXATI_VERSION="3.12"
 ADD ${TIXATI_DOWNLOAD_URL}/tixati_${TIXATI_VERSION}-1_amd64.deb /tmp
 
 RUN set -x \
     && apt update \
     && apt install -yq \
         dbus \
-        /tmp/tixati_${TIXATI_VERSION}-1_amd64.deb \
-    && rm /tmp/tixati_${TIXATI_VERSION}-1_amd64.deb \
+        /tmp/tixati_*-1_amd64.deb \
     && apt-get clean  \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
