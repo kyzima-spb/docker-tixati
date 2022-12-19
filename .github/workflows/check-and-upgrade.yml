@@ -4,8 +4,9 @@ on:
   schedule:
     - cron: '45 6 * * *'
   push:
-    branches:
-      - dev-master
+    paths:
+      - .github/workflows/check-and-upgrade.yml
+      - scripts/**
 
 jobs:
   upgrade:
