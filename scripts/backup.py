@@ -59,9 +59,11 @@ def ftp_file_exists(ftp: ftplib.FTP_TLS, path: str) -> bool:
 
 
 def main(argv: t.Sequence[str]) -> int:
-    if len(argv) < 1:
+    if len(argv) < 2:
         logger.error('Version not found.')
         return 1
+
+    version = argv[1]
 
     try:
         host = os.environ['FTP_HOST']
@@ -71,11 +73,11 @@ def main(argv: t.Sequence[str]) -> int:
         logger.error(f'Secret {err} must be set!')
         return 1
 
-    backup_version(host, user, password, version=argv[0])
+    backup_version(host, user, password, version=version)
 
     return 0
 
 
 if __name__ == '__main__':
     load_dotenv()
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main(sys.argv))
