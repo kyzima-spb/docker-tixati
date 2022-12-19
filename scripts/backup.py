@@ -1,26 +1,15 @@
 import ftplib
-import logging
 import os
 import sys
 import time
 import typing as t
 
 from dotenv import load_dotenv
-import requests
+
+import utils
 
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-logger_handler = logging.StreamHandler()
-
-formatter = logging.Formatter(
-    '[{levelname:^7}] {lineno} - {asctime}\n{message}',
-    # '::{levelname} file={pathname},line={lineno},title={asctime}::{message}',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    style='{',
-)
-logger_handler.setFormatter(formatter)
-logger.addHandler(logger_handler)
+logger = utils.get_logger(__name__)
 
 
 def backup_version(host: str, user: str, password: str, version: str):
@@ -47,12 +36,13 @@ def backup_version(host: str, user: str, password: str, version: str):
 
         for url in download_urls:
             filename = os.path.basename(url)
+            session = utils.make_session()
 
             if not ftp_file_exists(ftp, filename):
-                if not requests.head(url, allow_redirects=True).ok:
+                if not session.head(url, allow_redirects=True).ok:
                     logger.warning(f'File {filename!r} not found.')
                 else:
-                    resp = requests.get(url, stream=True, allow_redirects=True)
+                    resp = session.get(url, stream=True, allow_redirects=True)
                     ftp.storbinary('STOR %s' % filename, resp.raw, 4096)
                     logger.info('Backup %s' % filename)
                     time.sleep(1)

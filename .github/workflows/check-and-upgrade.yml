@@ -1,0 +1,76 @@
+name: Check the new version of Tixati and upgrade
+
+on:
+  schedule:
+    - cron: '45 6 * * *'
+  push:
+    branches:
+      - dev-master
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./scripts
+    outputs:
+      latest_version: ${{ steps.result.outputs.latest_version }}
+      updated: ${{ steps.result.outputs.updated }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      -
+        name: Install dependencies
+        run: pip install -r requirements.txt
+      -
+        name: Check and upgrade
+        id: result
+        run: python upgrade.py
+      -
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        if: ${{ fromJSON(steps.result.outputs.updated) }}
+        env:
+          MESSAGE: >
+            Bump Tixati
+            from ${{ steps.result.outputs.build_version }}
+            to ${{ steps.result.outputs.latest_version }}
+        with:
+          branch: checker/latest-version
+          delete-branch: true
+          title: ${{ env.MESSAGE }}
+          commit-message: ${{ env.MESSAGE }}
+          labels: |
+            automated pr
+  backup:
+    needs: upgrade
+    if: ${{ fromJSON(needs.upgrade.outputs.updated) }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./scripts
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      -
+        name: Install dependencies
+        run: pip install -r requirements.txt
+      -
+        name: Backup Tixati installers to FTP
+        run: python backup.py ${{ needs.upgrade.outputs.latest_version }}
+         env:
+           FTP_HOST: ${{ secrets.FTP_HOST }}
+           FTP_USER: ${{ secrets.FTP_USER }}
+           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}

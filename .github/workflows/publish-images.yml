@@ -4,28 +4,29 @@ on:
   push:
     branches:
       - master
-    paths:
-      - .github/workflows/publish-image.yml
 
 env:
   IMAGE_NAME: "tixati"
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.load.outputs.matrix }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Load JSON file
+        id: load
+        working-directory: ./.github
+        run: echo "matrix=$(cat matrix.json)" | tr -d '\n' >> $GITHUB_OUTPUT
   build:
+    needs: setup
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        version:
-          - "2.82"
-          - "2.83"
-          - "2.84"
-          - "2.85"
-          - "2.86"
-          - "2.87"
-          - "2.88"
-          - "2.89"
-          - "3.11"
-          - "3.12"
+      matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
     steps:
       -
         name: Checkout
@@ -41,7 +42,7 @@ jobs:
           tags: |
             ${{ matrix.version }}
           flavor: |
-            latest=${{ matrix.version == '3.12' }}
+            latest=${{ matrix.latest }}
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
