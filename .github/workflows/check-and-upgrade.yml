@@ -70,7 +70,7 @@ jobs:
       -
         name: Backup Tixati installers to FTP
         run: python backup.py ${{ needs.upgrade.outputs.latest_version }}
-         env:
-           FTP_HOST: ${{ secrets.FTP_HOST }}
-           FTP_USER: ${{ secrets.FTP_USER }}
-           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
