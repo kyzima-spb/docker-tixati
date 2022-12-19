@@ -1,6 +1,18 @@
-## Attention
+# Tixati torrent client in Docker
 
-This crazy idea to run GUI applications in the Docker container, but unfortunately I did not find another way to run Tixati on the server. Use this image only on servers without a desktop environment. If your server has a DE, use the installer from the official site.
+[![Github Repo](https://img.shields.io/badge/github-repo-brightgreen)](https://github.com/kyzima-spb/docker-tixati)
+[![GitHub last commit](https://img.shields.io/github/last-commit/kyzima-spb/docker-tixati)](https://github.com/kyzima-spb/docker-tixati)
+[![GitHub Repo stars](https://img.shields.io/github/stars/kyzima-spb/docker-tixati)](https://github.com/kyzima-spb/docker-tixati/stargazers)
+
+---
+**Attention**
+
+This crazy idea to run GUI applications in the Docker container,
+but unfortunately I did not find another way to run Tixati on the server.
+Use this image only on servers without a desktop environment.
+If your server has a DE, use the installer from the official site.
+
+---
 
 
 ### Volumes
