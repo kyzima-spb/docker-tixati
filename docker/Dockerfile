@@ -7,7 +7,7 @@ LABEL maintainer="Kirill Vercetti <office@kyzima-spb.com>"
 USER root
 
 ARG TIXATI_DOWNLOAD_URL="https://download2.tixati.com/download"
-ARG TIXATI_VERSION="3.17"
+ARG TIXATI_VERSION="3.18"
 ADD ${TIXATI_DOWNLOAD_URL}/tixati_${TIXATI_VERSION}-1_amd64.deb /tmp
 
 RUN set -x \
