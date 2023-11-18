@@ -14,6 +14,7 @@ RUN set -x \
     && apt update \
     && apt install -yq \
         dbus \
+        libgtk-3-0 \
         /tmp/tixati_*-1_amd64.deb \
     && apt-get clean  \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
