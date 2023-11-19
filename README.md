@@ -17,9 +17,9 @@ If your server has a DE, use the installer from the official site.
 
 ### Volumes
 
-* `/home/tixati/Desktop/downloads` - directory with downloaded files;
-* `/home/tixati/Desktop/torrent-files` - directory with torrent files;
-* `/home/tixati/.tixati` - directory with tixati profile.
+* `/home/user/Desktop/downloads` - directory with downloaded files;
+* `/home/user/Desktop/torrent-files` - directory with torrent files;
+* `/home/user/.tixati` - directory with tixati profile.
 
 ### Environment Variables
 
@@ -37,8 +37,8 @@ Run the container named tixati_1 in daemon mode and mount the specified volumes 
 ```bash
 $ docker run -d --name tixati_1 \
       --network host \
-      -v $(pwd)/downloads:/home/tixati/Desktop/downloads \
-      -v $(pwd)/torrent-files:/home/tixati/Desktop/torrent-files \
+      -v $(pwd)/downloads:/home/user/Desktop/downloads \
+      -v $(pwd)/torrent-files:/home/user/Desktop/torrent-files \
       kyzimaspb/tixati
 ```
 
@@ -52,8 +52,8 @@ $ docker run -d --name tixati_1 \
       --network host \
       --restart unless-stopped \
       -e VNC_SERVER_PASSWORD=qwe123 \
-      -v $(pwd)/downloads:/home/tixati/Desktop/downloads \
-      -v $(pwd)/torrent-files:/home/tixati/Desktop/torrent-files \
+      -v $(pwd)/downloads:/home/user/Desktop/downloads \
+      -v $(pwd)/torrent-files:/home/user/Desktop/torrent-files \
       kyzimaspb/tixati
 ```
 
@@ -68,8 +68,8 @@ $ docker run -d --name tixati_1 \
       --restart unless-stopped \
       -m 512M \
       -e VNC_SERVER_PASSWORD=qwe123 \
-      -v $(pwd)/downloads:/home/tixati/Desktop/downloads \
-      -v $(pwd)/torrent-files:/home/tixati/Desktop/torrent-files \
+      -v $(pwd)/downloads:/home/user/Desktop/downloads \
+      -v $(pwd)/torrent-files:/home/user/Desktop/torrent-files \
       kyzimaspb/tixati
 ```
 

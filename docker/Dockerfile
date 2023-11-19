@@ -33,5 +33,3 @@ RUN set -x \
       -s //applicationTMP -t elem -n fullscreen -v "yes" \
       -r //applicationTMP -v application \
           /home/user/.config/openbox/rc.xml
-
-VOLUME /home/user/.tixati /home/user/Desktop/downloads /home/user/Desktop/torrent-files
