@@ -1,4 +1,4 @@
-ARG RELEASE="bullseye-slim"
+ARG RELEASE="bookworm-slim"
 
 FROM kyzimaspb/gui:$RELEASE
 
