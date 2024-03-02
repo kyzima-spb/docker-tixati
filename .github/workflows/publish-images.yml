@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - .github/workflows/publish-image.yml
+      - .github/matrix.json
       - docker/**
 
 env:
