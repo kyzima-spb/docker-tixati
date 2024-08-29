@@ -1,0 +1,14 @@
+#!/command/execlineb -P
+
+with-contenv
+
+if {
+    xmlstarlet ed -L \
+        -N o="http://openbox.org/3.4/rc" \
+        -s /o:openbox_config/o:applications -t elem -n applicationTMP -v "" \
+        -i //applicationTMP -t attr -n "title" -v "Tixati v*" \
+        -s //applicationTMP -t elem -n decor -v "no" \
+        -s //applicationTMP -t elem -n fullscreen -v "yes" \
+        -r //applicationTMP -v application \
+            /etc/xdg/openbox/rc.xml
+}

@@ -4,32 +4,50 @@ FROM kyzimaspb/gui:$RELEASE
 
 LABEL maintainer="Kirill Vercetti <office@kyzima-spb.com>"
 
-USER root
+WORKDIR /tixati
+
+COPY --from=kyzimaspb/useful /apps/compver/compver.sh /usr/local/bin/
 
 ARG TIXATI_DOWNLOAD_URL="https://download2.tixati.com/download"
 ARG TIXATI_VERSION="3.22"
-ADD ${TIXATI_DOWNLOAD_URL}/tixati_${TIXATI_VERSION}-1_amd64.deb /tmp
 
-RUN set -x \
-    && apt update \
-    && apt install -yq \
-        dbus \
-        libgtk-3-0 \
-        /tmp/tixati_*-1_amd64.deb \
-    && apt-get clean  \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ENV TIXATI_VERSION=${TIXATI_VERSION}
 
-COPY ./root /
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -ex; \
+        rm -f /etc/apt/apt.conf.d/docker-clean; \
+        echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache; \
+        \
+        savedAptMark="$(apt-mark showmanual)"; \
+        apt update; \
+        apt install -yq --no-install-recommends \
+            ca-certificates \
+            wget \
+        ; \
+        \
+        wget -O tixati.deb ${TIXATI_DOWNLOAD_URL}/tixati_${TIXATI_VERSION}-1_amd64.deb; \
+        apt-mark auto '.*' > /dev/null; \
+	    apt-mark manual $savedAptMark; \
+        apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+        \
+        apt install -yq --no-install-recommends \
+            dbus \
+            ./tixati.deb \
+        ; \
+        rm tixati.deb; \
+        \
+        cd /tixati; \
+        homeDIR="$(getent passwd user | cut -d: -f6)"; \
+        tixatiConfigDir="$(compver.sh "${TIXATI_VERSION} < 2.87" && echo '.tixati' || echo '.config/tixati')"; \
+        ln -s "$homeDIR/$tixatiConfigDir" ./config; \
+        for p in Desktop/downloads Desktop/torrent-files; do \
+            mkdir -p "$homeDIR/$p"; \
+            ln -s "$homeDIR/$p" "./$(basename $p)"; \
+        done; \
+        chown -R user:user "$homeDIR"
 
-USER user
 
-RUN set -x \
-    && /bin/bash -c 'mkdir -p /home/user/{.tixati,Desktop/{downloads,torrent-files}}' \
-    && xmlstarlet edit -L \
-      -N o="http://openbox.org/3.4/rc" \
-      -s /o:openbox_config/o:applications -t elem -n applicationTMP -v "" \
-      -i //applicationTMP -t attr -n "title" -v "Tixati v*" \
-      -s //applicationTMP -t elem -n decor -v "no" \
-      -s //applicationTMP -t elem -n fullscreen -v "yes" \
-      -r //applicationTMP -v application \
-          /home/user/.config/openbox/rc.xml
+VOLUME /tixati/config /tixati/downloads
+
+COPY ./ /

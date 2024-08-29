@@ -2,4 +2,7 @@
 
 with-contenv
 
-tixati %U
+backtick -E HOME { homeof user }
+s6-env HOME="$HOME"
+
+s6-setuidgid user tixati %U
