@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/publish-image.yml
+      - .github/workflows/publish-images.yml
       - .github/matrix.json
       - docker/**
 
@@ -67,9 +67,10 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: ./docker
+          context: ./docker/root
+          file: ./docker/Dockerfile
           build-args: |
-            TIXATI_DOWNLOAD_URL=https://supernatural.myjino.ru
+            TIXATI_DOWNLOAD_URL=https://supernatural.myjino.ru/tixati/
             TIXATI_VERSION=${{ matrix.version }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
