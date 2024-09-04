@@ -69,6 +69,7 @@ jobs:
         with:
           context: ./docker
           build-args: |
+            TIXATI_DOWNLOAD_URL=https://supernatural.myjino.ru
             TIXATI_VERSION=${{ matrix.version }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
