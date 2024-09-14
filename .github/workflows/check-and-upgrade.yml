@@ -4,74 +4,51 @@ on:
   schedule:
     - cron: '45 6 * * *'
   push:
+    branches:
+      - dev-master
     paths:
       - .github/workflows/check-and-upgrade.yml
-      - scripts/**
 
 jobs:
-  upgrade:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./scripts
-    outputs:
-      latest_version: ${{ steps.result.outputs.latest_version }}
-      updated: ${{ steps.result.outputs.updated }}
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-        name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-      -
-        name: Install dependencies
-        run: pip install -r requirements.txt
-      -
-        name: Check and upgrade
-        id: result
-        run: python upgrade.py
-      -
-        name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
-        if: ${{ fromJSON(steps.result.outputs.updated) }}
-        env:
-          MESSAGE: >
-            Bump Tixati
-            from ${{ steps.result.outputs.build_version }}
-            to ${{ steps.result.outputs.latest_version }}
-        with:
-          branch: checker/latest-version
-          delete-branch: true
-          title: ${{ env.MESSAGE }}
-          commit-message: ${{ env.MESSAGE }}
-          labels: |
-            automated pr
+  run:
+    uses: kyzima-spb/gh-actions/.github/workflows/bump-version.yml@master
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      commit-message: "Bump Tixati from {current} to {latest}"
+      get-current-release-command: |
+        jq -r '.include[] | select(.latest == true) | .version' .github/matrix.json
+      get-latest-release-command: |
+        wget -qO- https://www.tixati.com/download | grep 'Download Tixati v' | grep -oP '(?<=v)\d+(\.\d+)?'
+      patch-files-command: |
+        perl -i -pe 's|(?<=TIXATI_VERSION=")[^"]+|'${LATEST_VERSION}'|' docker/Dockerfile
+        pushd .github
+          jq --arg version "$LATEST_VERSION" '
+            .version += [$version]
+            | (.include[] | select(.latest == true) | .version) = $version
+          ' matrix.json | tee matrix.tmp.json && mv matrix.tmp.json matrix.json
+        popd
+
   backup:
-    needs: upgrade
-    if: ${{ fromJSON(needs.upgrade.outputs.updated) }}
+    needs: run
+    if: ${{ !fromJSON(needs.run.outputs.is-latest) }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./scripts
+    env:
+      LOCAL_DIR: ./downloads/
     steps:
       -
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Setup Python
-        uses: actions/setup-python@v5
+        name: Download latest Tixati releases
+        run: |
+          bash scripts/download.sh "${{ fromJSON(needs.run.outputs.latest-version) }}" "${{ env.LOCAL_DIR }}"
+      -
+        name: Backup to FTP Server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          python-version: '3.9'
-      -
-        name: Install dependencies
-        run: pip install -r requirements.txt
-      -
-        name: Backup Tixati installers to FTP
-        run: python backup.py ${{ needs.upgrade.outputs.latest_version }}
-        env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ${{ env.LOCAL_DIR }}

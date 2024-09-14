@@ -1,8 +1,0 @@
-beautifulsoup4==4.11.1
-certifi==2023.7.22
-charset-normalizer==2.1.1
-idna==3.4
-python-dotenv==0.21.0
-requests==2.31.0
-soupsieve==2.3.2.post1
-urllib3==1.26.18
