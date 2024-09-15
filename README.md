@@ -14,7 +14,7 @@ If your server has a DE, use the installer from the official site.
 
 ---
 
-![Tixati Screenshot](preview.png)
+![Tixati Screenshot](https://raw.githubusercontent.com/kyzima-spb/docker-tixati/master/preview.png)
 
 ## Run in daemon mode
 
