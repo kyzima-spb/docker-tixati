@@ -12,6 +12,10 @@ but unfortunately I did not find another way to run Tixati on the server.
 Use this image only on servers without a desktop environment.
 If your server has a DE, use the installer from the official site.
 
+**Reason for some versions missing:**
+
+* `3.21`, `3.22` - Does not save transfers and settings after closing the program. This behavior is also outside the container.
+* `3.24`, `3.25` - Does not save transmissions after program is closed. This behavior is also outside the container.
 ---
 
 ![Tixati Screenshot](https://raw.githubusercontent.com/kyzima-spb/docker-tixati/master/preview.png)
