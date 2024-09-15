@@ -4,28 +4,18 @@ on:
   push:
     branches:
       - master
+      - dev-master
     paths:
-      - .github/workflows/publish-images.yml
       - .github/matrix.json
-      - docker/**
-
-env:
-  IMAGE_NAME: "tixati"
+      - .github/workflows/publish-images.yml
+      - 'docker/**'
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.load.outputs.matrix }}
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-        name: Load JSON file
-        id: load
-        working-directory: ./.github
-        run: echo "matrix=$(cat matrix.json)" | tr -d '\n' >> $GITHUB_OUTPUT
+    uses: kyzima-spb/gh-actions/.github/workflows/read-matrix.yml@master
+    with:
+      path: ./.github/matrix.json
+
   build:
     needs: setup
     runs-on: ubuntu-latest
@@ -36,55 +26,23 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
+        uses: kyzima-spb/gh-actions/.github/actions/docker-build-image@master
         with:
+          context: ./docker/root
+          file: ./docker/Dockerfile
           images: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+            ${{ vars.IMAGE_NAME }}
+            ghcr
+          build-args: |
+            TIXATI_DOWNLOAD_URL=${{ secrets.TIXATI_MIRROR }}
+            TIXATI_VERSION=${{ matrix.version }}
           tags: |
             ${{ matrix.version }}
           flavor: |
             latest=${{ matrix.latest }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      -
-        name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: ./docker/root
-          file: ./docker/Dockerfile
-          build-args: |
-            TIXATI_DOWNLOAD_URL=https://supernatural.myjino.ru/tixati/
-            TIXATI_VERSION=${{ matrix.version }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/buildcache:${{ env.IMAGE_NAME }}-${{ matrix.version }}
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/buildcache:${{ env.IMAGE_NAME }}-${{ matrix.version }},mode=max
-  remove-old-versions:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete old versions of images
-        uses: vlaurin/action-ghcr-prune@main
-        with:
-          token: ${{ secrets.PAT }}
-          user: ${{ github.repository_owner }}
-          container: ${{ env.IMAGE_NAME }}
-          untagged: true
+          cache: |
+            arg=default,version=buildcache-${{ matrix.version }}
+          push: ${{ github.ref_name == 'master' }}
+          docker-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
