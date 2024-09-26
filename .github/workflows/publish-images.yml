@@ -19,6 +19,8 @@ jobs:
   build:
     needs: setup
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     strategy:
       matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
     steps:
@@ -32,7 +34,7 @@ jobs:
           file: ./docker/Dockerfile
           images: |
             ${{ vars.IMAGE_NAME }}
-            ghcr
+            {ghcr}
           build-args: |
             TIXATI_DOWNLOAD_URL=${{ secrets.TIXATI_MIRROR }}
             TIXATI_VERSION=${{ matrix.version }}
