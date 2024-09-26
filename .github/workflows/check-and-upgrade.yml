@@ -12,6 +12,9 @@ on:
 jobs:
   run:
     uses: kyzima-spb/gh-actions/.github/workflows/bump-version.yml@master
+    permissions:
+      contents: write
+      pull-requests: write
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
     with:
