@@ -22,7 +22,7 @@ jobs:
       get-current-release-command: |
         jq -r '.include[] | select(.latest == true) | .version' .github/matrix.json
       get-latest-release-command: |
-        wget -qO- https://www.tixati.com/download | grep 'Download Tixati v' | grep -oP '(?<=v)\d+(\.\d+)?'
+        wget -qO- https://www.tixati.com/download | grep 'Now Available!' | grep -oP '(?<=Version )\d+(\.\d+)?'
       patch-files-command: |
         perl -i -pe 's|(?<=TIXATI_VERSION=")[^"]+|'${LATEST_VERSION}'|' docker/Dockerfile
         pushd .github
