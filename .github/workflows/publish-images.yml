@@ -37,7 +37,6 @@ jobs:
             ${{ vars.IMAGE_NAME }}
             {ghcr}
           build-args: |
-            TIXATI_DOWNLOAD_URL=${{ secrets.TIXATI_MIRROR }}
             TIXATI_VERSION=${{ matrix.version }}
           secrets: |
             "mirrorurl=${{ secrets.TIXATI_MIRROR }}"
