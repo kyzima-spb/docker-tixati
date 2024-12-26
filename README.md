@@ -117,6 +117,24 @@ $ cd docker-tixati
 $ docker build -t tixati --build-arg TIXATI_VERSION=2.67 .
 ```
 
+If you are using a version below `3.31`,
+then the official addresses for downloading the installer:
+
+- https://download1.tixati.com/download
+- https://download2.tixati.com/download
+- https://download3.tixati.com/download
+
+Therefore, the command for building will look like this:
+
+```bash
+$ git clone https://github.com/kyzima-spb/docker-tixati.git
+$ cd docker-tixati
+$ docker build -t tixati \
+      --build-arg TIXATI_DOWNLOAD_URL="https://download2.tixati.com/download" \
+      --build-arg TIXATI_VERSION=3.29 \
+      .
+```
+
 ## How to change distribution release?
 
 The `RELEASE` build argument allows you to specify the release of the Debian distribution.

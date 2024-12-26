@@ -19,5 +19,5 @@ for name in "${files[@]}"; do
   
   filename="$([[ $name =~ \.deb$ ]] && echo "_${version}-1_${name}" || echo "-${version}-1.${name}")"
 
-  wget -P "$dest" "https://download${i}.tixati.com/download/tixati${filename}"
+  wget -P "$dest" "https://download.tixati.com/tixati${filename}"
 done

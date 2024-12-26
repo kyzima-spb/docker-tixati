@@ -8,13 +8,14 @@ WORKDIR /tixati
 
 COPY --from=kyzimaspb/useful /apps/compver/compver.sh /usr/local/bin/
 
-ARG TIXATI_DOWNLOAD_URL="https://download2.tixati.com/download"
+ARG TIXATI_DOWNLOAD_URL="https://download.tixati.com"
 ARG TIXATI_VERSION="3.31"
 
 ENV TIXATI_VERSION=${TIXATI_VERSION}
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=secret,id=mirrorurl,target=/root/.mirrorurl \
     set -ex; \
         rm -f /etc/apt/apt.conf.d/docker-clean; \
         echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache; \
@@ -26,7 +27,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
             wget \
         ; \
         \
-        wget -O tixati.deb ${TIXATI_DOWNLOAD_URL}/tixati_${TIXATI_VERSION}-1_amd64.deb; \
+        downloadUrl="${TIXATI_DOWNLOAD_URL}"; \
+        test -f /root/.mirrorurl && downloadUrl="$(cat /root/.mirrorurl)" || true; \
+        compver.sh "${TIXATI_VERSION} < 3.31" && downloadUrl='https://download2.tixati.com/download' || true; \
+        wget -q --progress=dot -O tixati.deb ${downloadUrl}/tixati_${TIXATI_VERSION}-1_amd64.deb; \
         apt-mark auto '.*' > /dev/null; \
 	    apt-mark manual $savedAptMark; \
         apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
