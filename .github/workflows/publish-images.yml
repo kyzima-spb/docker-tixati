@@ -23,6 +23,7 @@ jobs:
       packages: write
     strategy:
       matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
+      max-parallel: 5
     steps:
       -
         name: Checkout
