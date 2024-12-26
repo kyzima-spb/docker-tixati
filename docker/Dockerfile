@@ -28,8 +28,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         ; \
         \
         downloadUrl="${TIXATI_DOWNLOAD_URL}"; \
+        if [ "$downloadUrl" = 'https://download.tixati.com' ]; then \
+            compver.sh "${TIXATI_VERSION} < 3.31" && downloadUrl='https://download2.tixati.com/download' || true; \
+        fi; \
         test -f /root/.mirrorurl && downloadUrl="$(cat /root/.mirrorurl)" || true; \
-        compver.sh "${TIXATI_VERSION} < 3.31" && downloadUrl='https://download2.tixati.com/download' || true; \
         wget -q --progress=dot -O tixati.deb ${downloadUrl}/tixati_${TIXATI_VERSION}-1_amd64.deb; \
         apt-mark auto '.*' > /dev/null; \
 	    apt-mark manual $savedAptMark; \
