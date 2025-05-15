@@ -14,6 +14,11 @@ files=(
   win32-install.exe
 )
 
+if [[ -z "$version" ]]; then
+  echo >&2 "Usage: $0 TIXATI_VERSION [DOWNLOAD_DIRECTORY]"
+  exit 1
+fi
+
 for name in "${files[@]}"; do
   i=$((i % 3 + 1))
   

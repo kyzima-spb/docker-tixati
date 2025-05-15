@@ -32,28 +32,28 @@ jobs:
           ' matrix.json | tee matrix.tmp.json && mv matrix.tmp.json matrix.json
         popd
 
-  backup:
-    needs: run
-    if: ${{ !fromJSON(needs.run.outputs.is-latest) }}
-    runs-on: ubuntu-latest
-    env:
-      LOCAL_DIR: ./downloads/
-    steps:
-      - run: echo "${{ needs.run.outputs.is-latest }}"
-      - run: exit 1
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-        name: Download latest Tixati releases
-        run: |
-          bash scripts/download.sh "${{ fromJSON(needs.run.outputs.latest-version) }}" "${{ env.LOCAL_DIR }}"
-      -
-        name: Backup to FTP Server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          protocol: ftps
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ${{ env.LOCAL_DIR }}
+  # backup:
+  #   needs: run
+  #   if: ${{ !fromJSON(needs.run.outputs.is-latest) }}
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     LOCAL_DIR: ./downloads/
+  #   steps:
+  #     - run: echo "${{ needs.run.outputs.is-latest }}"
+  #     - run: exit 1
+  #     -
+  #       name: Checkout
+  #       uses: actions/checkout@v4
+  #     -
+  #       name: Download latest Tixati releases
+  #       run: |
+  #         bash scripts/download.sh "${{ fromJSON(needs.run.outputs.latest-version) }}" "${{ env.LOCAL_DIR }}"
+  #     -
+  #       name: Backup to FTP Server
+  #       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+  #       with:
+  #         protocol: ftps
+  #         server: ${{ secrets.FTP_HOST }}
+  #         username: ${{ secrets.FTP_USER }}
+  #         password: ${{ secrets.FTP_PASSWORD }}
+  #         local-dir: ${{ env.LOCAL_DIR }}
