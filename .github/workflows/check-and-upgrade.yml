@@ -1,13 +1,14 @@
 name: Check the new version of Tixati and upgrade
 
 on:
-  schedule:
-    - cron: '45 6 * * *'
-  push:
-    branches:
-      - dev-master
-    paths:
-      - .github/workflows/check-and-upgrade.yml
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '45 6 * * *'
+  # push:
+  #   branches:
+  #     - dev-master
+  #   paths:
+  #     - .github/workflows/check-and-upgrade.yml
 
 jobs:
   run:
@@ -34,11 +35,14 @@ jobs:
 
   backup:
     needs: run
-    if: ${{ !fromJSON(needs.run.outputs.is-latest) }}
+    # if: ${{ !fromJSON(needs.run.outputs.is-latest) }}
+    # if: ${{ !needs.run.outputs.is-latest }}
     runs-on: ubuntu-latest
     env:
       LOCAL_DIR: ./downloads/
     steps:
+      - run: echo "${{ needs.run.outputs.is-latest }}"
+      - run: exit 1
       -
         name: Checkout
         uses: actions/checkout@v4

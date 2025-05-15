@@ -68,7 +68,7 @@ test_confirm_licence 'Tixati'
 sleep 0.1
 
 test_initial_configuration 'Tixati Initial Configuration'
-sleep 0.1
+sleep 1
 
 # close_update_dialog 'Update Available'
 # sleep 0.1
