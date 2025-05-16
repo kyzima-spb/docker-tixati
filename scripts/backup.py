@@ -67,6 +67,7 @@ def main() -> int:
     
     with FTP_TLS(host, user=user, passwd=password, timeout=60) as ftp:
         for name in get_filenames(latest_release):
+            hashsumfile = '%s.hashsum' % name
             url = 'https://download.tixati.com/%s' % name
 
             with tempfile.TemporaryFile() as tf, urlopen(url, timeout=60) as rf:
@@ -75,8 +76,11 @@ def main() -> int:
 
                 hashsum = hashlib.file_digest(tf, hashlib.md5).hexdigest()
 
+                if not ftp.exists(hashsumfile):
+                    ftp.write_text(hashsumfile, hashsum)
+
                 if ftp.exists(name):
-                    if hashsum == ftp.read_text('%s.hashsum' % name):
+                    if hashsum == ftp.read_text(hashsumfile):
                         print('The latest release file %s has not changed.' % name)
                         continue
                     else:
