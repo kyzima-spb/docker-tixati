@@ -1,4 +1,4 @@
-ARG RELEASE="bookworm-slim"
+ARG RELEASE="trixie-slim"
 
 FROM kyzimaspb/gui:$RELEASE
 
@@ -29,12 +29,17 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         \
         downloadUrl="${TIXATI_DOWNLOAD_URL}"; \
         if [ "$downloadUrl" = 'https://download.tixati.com' ]; then \
-            compver.sh "${TIXATI_VERSION} < 3.31" && downloadUrl='https://download2.tixati.com/download' || true; \
+            compver.sh "${TIXATI_VERSION} >= 3.31" || downloadUrl='https://download2.tixati.com/download'; \
         fi; \
-        test -f /root/.mirrorurl && downloadUrl="$(cat /root/.mirrorurl)" || true; \
-        wget -q --progress=dot -O tixati.deb ${downloadUrl}/tixati_${TIXATI_VERSION}-1_amd64.deb; \
+        ! test -f /root/.mirrorurl || downloadUrl="$(cat /root/.mirrorurl)"; \
+        for i in 1 2 3; do \
+						if wget -nv --timeout=30 -O tixati.deb "${downloadUrl}/tixati_${TIXATI_VERSION}-1_amd64.deb"; then \
+								break; \
+						fi; \
+						sleep 10; \
+				done; \
         apt-mark auto '.*' > /dev/null; \
-	    apt-mark manual $savedAptMark; \
+	    	apt-mark manual $savedAptMark; \
         apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
         \
         apt install -yq --no-install-recommends \
